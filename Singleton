@@ -1,0 +1,144 @@
+// EJERCICIO 2: PATRÓN SINGLETON
+
+//CÓDIGO INICIAL (PROBLEMA)
+class AppConfigProblema {
+    private String theme;
+    private String language;
+    
+    public AppConfigProblema() {
+        this.theme = "Dark";
+        this.language = "ES";
+        System.out.println(" Configuración creada: " + this);
+    }
+    
+    public void setTheme(String theme) { this.theme = theme; }
+    public void setLanguage(String language) { this.language = language; }
+    public String getTheme() { return theme; }
+    public String getLanguage() { return language; }
+    
+    @Override
+    public String toString() {
+        return String.format("AppConfig[theme=%s, language=%s]", theme, language);
+    }
+}
+
+// SOLUCIÓN CON PATRÓN SINGLETON (Eager Initialization)
+class AppConfig {
+    // Paso 2: Instancia estática y privada (Eager Initialization)
+    private static final AppConfig instance = new AppConfig();
+    
+    private String theme;
+    private String language;
+    
+    // Paso 1: Constructor privado
+    private AppConfig() {
+        this.theme = "Dark";
+        this.language = "ES";
+        System.out.println("🔧 Configuración Singleton creada: " + this);
+    }
+    
+    // Paso 3: Método getter público y estático
+    public static AppConfig getInstance() {
+        return instance;
+    }
+    
+    public void setTheme(String theme) { this.theme = theme; }
+    public void setLanguage(String language) { this.language = language; }
+    public String getTheme() { return theme; }
+    public String getLanguage() { return language; }
+    
+    @Override
+    public String toString() {
+        return String.format("AppConfig[theme=%s, language=%s]", theme, language);
+    }
+}
+
+// CLASE PRINCIPAL - DEMOSTRACIÓN
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=".repeat(60));
+        System.out.println("EJERCICIO 1: PATRÓN PROTOTYPE");
+        System.out.println("=".repeat(60));
+        
+        demoPrototypeProblema();
+        System.out.println();
+        demoPrototypeSolucion();
+        
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("EJERCICIO 2: PATRÓN SINGLETON");
+        System.out.println("=".repeat(60));
+        
+        demoSingletonProblema();
+        System.out.println();
+        demoSingletonSolucion();
+    }
+    
+    //DEMOSTRACIÓN PROTOTYPE: PROBLEMA
+    private static void demoPrototypeProblema() {
+        System.out.println("\n SIN PATRÓN PROTOTYPE:");
+        long inicio = System.currentTimeMillis();
+        
+        GraphicElementProblema button1 = new GraphicElementProblema(
+            "StyledButton", 10, 20, "gradient-shadow"
+        );
+        
+        GraphicElementProblema button2 = new GraphicElementProblema(
+            "StyledButton", 40, 60, "gradient-shadow"
+        );
+        
+        long fin = System.currentTimeMillis();
+        System.out.println(" Tiempo total: " + (fin - inicio) + "ms");
+    }
+    
+    //DEMOSTRACIÓN PROTOTYPE: SOLUCIÓN
+    private static void demoPrototypeSolucion() {
+        System.out.println("\n CON PATRÓN PROTOTYPE:");
+        long inicio = System.currentTimeMillis();
+        
+        // Creamos el prototipo una sola vez (operación costosa)
+        GraphicElement button1 = new GraphicElement(
+            "StyledButton", 10, 20, "gradient-shadow"
+        );
+        
+        // Uso del patrón según las instrucciones
+        GraphicElement button2 = button1.clone(); // ¡Ahora esto es muy rápido!
+        button2.setX(40);
+        button2.setY(60);
+        
+        long fin = System.currentTimeMillis();
+        System.out.println(" Tiempo total: " + (fin - inicio) + "ms");
+        System.out.println(" Button1: " + button1);
+        System.out.println(" Button2: " + button2);
+    }
+    
+    //DEMOSTRACIÓN SINGLETON: PROBLEMA
+    private static void demoSingletonProblema() {
+        System.out.println("\n SIN PATRÓN SINGLETON:");
+        
+        AppConfigProblema config1 = new AppConfigProblema();
+        config1.setTheme("Light");
+        
+        AppConfigProblema config2 = new AppConfigProblema();
+        
+        System.out.println("Config1: " + config1);
+        System.out.println("Config2: " + config2);
+        System.out.println("¿Son el mismo objeto? " + (config1 == config2));
+        System.out.println(" Problema: Múltiples instancias con configuraciones inconsistentes!");
+    }
+    
+    //DEMOSTRACIÓN SINGLETON: SOLUCIÓN
+    private static void demoSingletonSolucion() {
+        System.out.println("\n CON PATRÓN SINGLETON:");
+        
+        // Paso 4: Uso de getInstance() en lugar de new
+        AppConfig config1 = AppConfig.getInstance();
+        config1.setTheme("Light");
+        
+        AppConfig config2 = AppConfig.getInstance();
+        
+        System.out.println("Config1: " + config1);
+        System.out.println("Config2: " + config2);
+        System.out.println("¿Son el mismo objeto? " + (config1 == config2));
+        System.out.println(" Éxito: Una única instancia compartida!");
+    }
+}
